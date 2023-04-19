@@ -31,10 +31,16 @@ module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove({ owner, _id: cardId })
     .then((card) => {
-      if (card) res.send({ data: card });
+      if (card) res.send({ message: 'Карточка удалена' });
       else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
     })
-    .catch(() => res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' }));
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
+      } else {
+        res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
+      }
+    });
 };
 
 module.exports.likeCard = (req, res) => {
