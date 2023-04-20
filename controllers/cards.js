@@ -2,6 +2,22 @@ const mongoose = require('mongoose');
 const Card = require('../models/card');
 const { ERROR_BAD_DATA, ERROR_NOT_FOUND, ERROR_DEFAULT } = require('../utils/errors');
 
+const cardDataUpdate = (req, res, updateData) => {
+  Card.findByIdAndUpdate(req.params.cardId, updateData, { new: true })
+    .populate(['owner', 'likes'])
+    .then((card) => {
+      if (card) res.send({ data: card });
+      else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
+    })
+    .catch((err) => {
+      if (err instanceof mongoose.Error.CastError) {
+        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
+      } else {
+        res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
+      }
+    });
+};
+
 module.exports.getAllCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
@@ -45,41 +61,11 @@ module.exports.deleteCard = (req, res) => {
 };
 
 module.exports.likeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-    { new: true },
-  )
-    .populate(['owner', 'likes'])
-    .then((card) => {
-      if (card) res.send({ data: card });
-      else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
-    })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
-      } else {
-        res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
-      }
-    });
+  const updateData = { $addToSet: { likes: req.user._id } }; // добавить _id в массив
+  cardDataUpdate(req, res, updateData);
 };
 
 module.exports.dislikeCard = (req, res) => {
-  Card.findByIdAndUpdate(
-    req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
-    { new: true },
-  )
-    .populate(['owner', 'likes'])
-    .then((card) => {
-      if (card) res.send({ data: card });
-      else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
-    })
-    .catch((err) => {
-      if (err instanceof mongoose.Error.CastError) {
-        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
-      } else {
-        res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
-      }
-    });
+  const updateData = { $pull: { likes: req.user._id } }; // убрать _id из массива
+  cardDataUpdate(req, res, updateData);
 };
