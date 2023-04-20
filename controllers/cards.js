@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 const { ERROR_BAD_DATA, ERROR_NOT_FOUND, ERROR_DEFAULT } = require('../utils/errors');
 
@@ -18,7 +19,7 @@ module.exports.createCard = (req, res) => {
         .catch(() => res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' }));
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err instanceof mongoose.Error.ValidationError) {
         res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
@@ -35,7 +36,7 @@ module.exports.deleteCard = (req, res) => {
       else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err instanceof mongoose.Error.CastError) {
         res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
@@ -55,7 +56,7 @@ module.exports.likeCard = (req, res) => {
       else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err instanceof mongoose.Error.CastError) {
         res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
@@ -75,7 +76,7 @@ module.exports.dislikeCard = (req, res) => {
       else res.status(ERROR_NOT_FOUND).send({ message: 'Карточка не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err instanceof mongoose.Error.CastError) {
         res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные карточки.' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });

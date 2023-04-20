@@ -7,14 +7,14 @@ const {
   updateAvatar,
 } = require('../controllers/users');
 
-router.get('/users', getAllUsers); // возвращает всех пользователей
+router.get('/', getAllUsers); // возвращает всех пользователей
 
-router.get('/users/:userId', getUserById); // возвращает пользователя по _id
+router.get('/:userId', getUserById); // возвращает пользователя по _id
 
-router.post('/users', createUser); // создаёт пользователя
+router.post('/', createUser); // создаёт пользователя
 
-router.patch('/users/me', updateUser); // обновляет профиль
+router.patch('/me', updateUser); // обновляет профиль
 
-router.patch('/users/me/avatar', updateAvatar); //  обновляет аватар
+router.patch('/me/avatar', updateAvatar); //  обновляет аватар
 
 module.exports = router;
