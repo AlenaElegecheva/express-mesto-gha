@@ -9,7 +9,6 @@ const userDataUpdate = (req, res, updateData) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     },
   )
     .then((user) => {
@@ -18,7 +17,7 @@ const userDataUpdate = (req, res, updateData) => {
     })
     .catch((err) => {
       // eslint-disable-next-line max-len
-      if ((err instanceof mongoose.Error.CastError) || (err instanceof mongoose.Error.ValidationError)) {
+      if (err instanceof mongoose.Error.ValidationError) {
         res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные пользователя.' });
       } else {
         res.status(ERROR_DEFAULT).send({ message: 'Произошла ошибка' });
