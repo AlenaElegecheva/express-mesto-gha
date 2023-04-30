@@ -23,9 +23,9 @@ router.post('/signup', celebrate({
     password: Joi.string().required().min(8),
   }),
 }), createUser);
-router.use(auth);
-router.use('/users', userRouter);
-router.use('/cards', cardRouter);
+// router.use(auth);
+router.use('/users', auth, userRouter);
+router.use('/cards', auth, cardRouter);
 router.all('*', (req, res) => {
   res.status(ERROR_NOT_FOUND).send({ message: 'Страница не найдена' });
 });

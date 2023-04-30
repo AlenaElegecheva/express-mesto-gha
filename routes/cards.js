@@ -8,8 +8,9 @@ const {
   likeCard,
   dislikeCard,
 } = require('../controllers/cards');
+const { LINK } = require('../utils/regex');
 
-router.get('/', getAllCards); // возвращает всех пользователей
+router.get('/', getAllCards);
 
 router.post('/', celebrate({
   query: Joi.object().keys({
@@ -17,9 +18,9 @@ router.post('/', celebrate({
   }),
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required(),
+    link: Joi.string().required().regex(LINK),
   }),
-}), createCard); // возвращает пользователя по _id
+}), createCard);
 
 router.delete('/:cardId', celebrate({
   query: Joi.object().keys({
@@ -28,7 +29,7 @@ router.delete('/:cardId', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24),
   }),
-}), deleteCard); // создаёт пользователя
+}), deleteCard);
 
 router.put('/:cardId/likes', celebrate({
   query: Joi.object().keys({

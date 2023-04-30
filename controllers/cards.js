@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 const { NotFoundError } = require('../error/NotFoundError');
 const { ForbiddenError } = require('../error/ForbiddenError');
+const { ERROR_BAD_DATA } = require('../utils/errors');
 
 const cardDataUpdate = (req, res, updateData, next) => {
   Card.findByIdAndUpdate(req.params.cardId, updateData, { new: true })
@@ -27,10 +29,16 @@ module.exports.createCard = (req, res, next) => {
   Card.create({ name, link, owner })
     .then((card) => {
       card.populate('owner')
-        .then((newCard) => res.status(200).send(newCard))
-        .catch(next);
+        .then((newCard) => res.status(200).send(newCard));
     })
-    .catch(next);
+    .catch((err) => {
+      // eslint-disable-next-line max-len
+      if (err instanceof mongoose.Error.ValidationError) {
+        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные.' });
+      } else {
+        next(err);
+      }
+    });
 };
 
 module.exports.deleteCard = (req, res, next) => {
