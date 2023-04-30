@@ -90,6 +90,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .then((user) => {
       const dataUser = user.toObject();
+      delete dataUser.password;
       res.status(200).send(dataUser);
     })
     // eslint-disable-next-line consistent-return
