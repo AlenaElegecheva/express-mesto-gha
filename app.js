@@ -9,7 +9,7 @@ const cookieParser = require('cookie-parser');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const helmet = require('helmet');
 const rootRoute = require('./routes/index');
-const genErrorHandler = require('./middlewares/errors');
+const genErrorHandler = require('./middlewares/genErrorHandler');
 const limiter = require('./middlewares/limiter');
 
 const { PORT = 3000 } = process.env;

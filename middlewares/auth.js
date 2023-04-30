@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const token = require('jsonwebtoken');
-const { AuthorizationError } = require('../error/AuthorizationError');
+const AuthorizationError = require('../error/AuthorizationError');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 

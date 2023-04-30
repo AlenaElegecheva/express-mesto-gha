@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 const { JWT_SECRET, NODE_ENV } = process.env;
 const User = require('../models/user');
 const { ERROR_BAD_DATA, ERROR_CONFLICT_REQUEST } = require('../utils/errors');
-const { NotFoundError } = require('../error/NotFoundError');
+const NotFoundError = require('../error/NotFoundError');
 
 // eslint-disable-next-line max-len
 const userDataUpdate = (req, res, updateData, next) => { // функция-декоратор для получения данных пользователя
@@ -44,8 +44,11 @@ module.exports.getAllUsers = (req, res, next) => {
 module.exports.getUser = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      if (user) res.send({ data: user });
-      throw new NotFoundError('Пользователь не найден');
+      if (user) {
+        res.send({ data: user });
+      } else {
+        throw new NotFoundError(`Пользователь по указанному id:${req.user._id} не найден`);
+      }
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
@@ -59,8 +62,11 @@ module.exports.getUser = (req, res, next) => {
 module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
-      if (user) res.send({ data: user });
-      throw new NotFoundError('Пользователь не найден');
+      if (user) {
+        res.send({ data: user });
+      } else {
+        throw new NotFoundError('Пользователь с указанным id не найден');
+      }
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
