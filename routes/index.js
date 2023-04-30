@@ -6,6 +6,7 @@ const cardRouter = require('./cards');
 const { ERROR_NOT_FOUND } = require('../utils/errors');
 const { login, createUser } = require('../controllers/users');
 const auth = require('../middlewares/auth');
+const { LINK } = require('../utils/regex');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
@@ -17,7 +18,7 @@ router.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    // avatar: Joi.string().regex(LINK),
+    avatar: Joi.string().regex(LINK),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
