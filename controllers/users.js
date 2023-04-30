@@ -89,9 +89,8 @@ module.exports.createUser = (req, res, next) => {
       password: hash, // записываем хеш в базу. Метод принимает на вход два параметра: пароль и длину так называемой «соли» — случайной строки, которую метод добавит к паролю перед хешированем.
     }))
     .then((user) => {
-      const userObj = user.toObject();
-      delete userObj.password;
-      res.status(200).send(userObj);
+      const dataUser = user.toObject();
+      res.status(200).send(dataUser);
     })
     // eslint-disable-next-line consistent-return
     .catch((err) => {
