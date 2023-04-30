@@ -12,11 +12,7 @@ const { LINK } = require('../utils/regex');
 
 router.get('/', getAllUsers); // возвращает всех пользователей
 
-router.get('/me', celebrate({
-  query: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
-  }),
-}), getUser);
+router.get('/me', getUser);
 
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
