@@ -1,6 +1,5 @@
 const { ERROR_UNAUTHORIZED } = require('../utils/errors');
 
-// AUTHORIZATION ERROR
 class AuthorizationError extends Error {
   constructor(message) {
     super(message);

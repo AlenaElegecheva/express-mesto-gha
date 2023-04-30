@@ -1,6 +1,5 @@
 const { ERROR_NOT_FOUND } = require('../utils/errors');
 
-// AUTHORIZATION ERROR
 class NotFoundError extends Error {
   constructor(message) {
     super(message);
