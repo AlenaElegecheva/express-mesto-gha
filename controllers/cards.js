@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Card = require('../models/card');
-const { NotFoundError } = require('../error/NotFoundError');
-const { ForbiddenError } = require('../error/ForbiddenError');
+const NotFoundError = require('../error/NotFoundError');
+const ForbiddenError = require('../error/ForbiddenError');
 const { ERROR_BAD_DATA } = require('../utils/errors');
 
 const cardDataUpdate = (req, res, updateData, next) => {

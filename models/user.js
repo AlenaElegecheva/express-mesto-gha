@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const validator = require('validator');
-const { AuthorizationError } = require('../error/AuthorizationError');
+const AuthorizationError = require('../error/AuthorizationError');
 const { LINK } = require('../utils/regex');
 
 const userSchema = new mongoose.Schema({
