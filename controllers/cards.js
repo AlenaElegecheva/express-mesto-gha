@@ -4,7 +4,8 @@ const NotFoundError = require('../error/NotFoundError');
 const ForbiddenError = require('../error/ForbiddenError');
 const { ERROR_BAD_DATA } = require('../utils/errors');
 
-const cardDataUpdate = (req, res, updateData, next) => {
+// eslint-disable-next-line max-len
+const cardDataUpdate = (req, res, updateData, next) => { // общий метод для обновления данных пользователя в лайках
   Card.findByIdAndUpdate(req.params.cardId, updateData, { new: true })
     .populate(['owner', 'likes'])
     .then((card) => {
@@ -59,12 +60,12 @@ module.exports.deleteCard = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   const updateData = { $addToSet: { likes: req.user._id } }; // добавить _id в массив
-  cardDataUpdate(req, res, updateData);
+  cardDataUpdate(req, res, updateData, next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   const updateData = { $pull: { likes: req.user._id } }; // убрать _id из массива
-  cardDataUpdate(req, res, updateData);
+  cardDataUpdate(req, res, updateData, next);
 };
