@@ -44,24 +44,20 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-  const owner = req.user.id;
+  const owner = req.user._id;
   Card.findById(cardId)
     .then((card) => {
       if (!card) {
-        next(new NotFoundError('Карточка не найдена.'));
-        return;
+        throw new NotFoundError('Карточка не найдена!');
       }
-      const cardOwner = card.owner.toString();
-      if (owner !== cardOwner) {
-        next(new ForbiddenError('Вы пытаетесь удалить чужую карточку'));
-      } else {
-        Card.findByIdAndRemove(cardId)
-          .then(() => {
-            res.send({ message: 'Карточка успешно удалена' });
-          })
-          .catch(next);
+      if (String(card.owner) !== owner) {
+        throw new ForbiddenError('Вы не можете удалить чужую карточку');
       }
-    });
+      return Card.findByIdAndRemove(cardId)
+        .then(() => res.status(200).send('Карточка удалена!'))
+        .catch(next);
+    })
+    .catch(next);
 };
 
 module.exports.likeCard = (req, res, next) => {
