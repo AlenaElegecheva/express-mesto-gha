@@ -6,8 +6,9 @@ const jwt = require('jsonwebtoken');
 
 const { JWT_SECRET, NODE_ENV } = process.env;
 const User = require('../models/user');
-const { ERROR_BAD_DATA, ERROR_CONFLICT_REQUEST } = require('../utils/errors');
 const NotFoundError = require('../error/NotFoundError');
+const BadDataError = require('../error/BadDataError');
+const ConflictError = require('../error/ConflictError');
 
 // eslint-disable-next-line max-len
 const userDataUpdate = (req, res, updateData, next) => { // функция-декоратор для получения данных пользователя
@@ -28,7 +29,7 @@ const userDataUpdate = (req, res, updateData, next) => { // функция-де�
     .catch((err) => {
       // eslint-disable-next-line max-len
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные пользователя.' });
+        throw new BadDataError('Переданы некорректные данные.');
       } else {
         next(err);
       }
@@ -52,7 +53,7 @@ module.exports.getUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные пользователя.' });
+        throw new BadDataError('Переданы некорректные данные.');
       } else {
         next(err);
       }
@@ -70,7 +71,7 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные пользователя.' });
+        throw new BadDataError('Переданы некорректные данные.');
       } else {
         next(err);
       }
@@ -102,11 +103,9 @@ module.exports.createUser = (req, res, next) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        res.status(ERROR_BAD_DATA).send({ message: 'Переданы некорректные данные пользователя.' });
+        throw new BadDataError('Переданы некорректные данные.');
       } else if (err.code === 11000) {
-        return res.status(ERROR_CONFLICT_REQUEST).send({
-          message: 'Данный email уже зарегистрирован.',
-        });
+        throw new ConflictError('Данный email уже зарегистрирован.');
       } else {
         next(err);
       }
@@ -114,13 +113,13 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.updateUser = (req, res) => {
-  const updateData = req.body;
-  userDataUpdate(req, res, updateData);
+  const { name, about } = req.body;
+  userDataUpdate(req, res, { name, about });
 };
 
 module.exports.updateAvatar = (req, res) => {
-  const updateData = req.body;
-  userDataUpdate(req, res, updateData);
+  const { avatar } = req.body;
+  userDataUpdate(req, res, { avatar });
 };
 
 module.exports.login = (req, res, next) => {

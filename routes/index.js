@@ -3,15 +3,15 @@ const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const userRouter = require('./users');
 const cardRouter = require('./cards');
-const { ERROR_NOT_FOUND } = require('../utils/errors');
 const { login, createUser } = require('../controllers/users');
 const auth = require('../middlewares/auth');
 const { LINK } = require('../utils/regex');
+const NotFoundError = require('../error/NotFoundError');
 
 router.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), login);
 router.post('/signup', celebrate({
@@ -20,14 +20,13 @@ router.post('/signup', celebrate({
     about: Joi.string().min(2).max(30),
     avatar: Joi.string().regex(LINK),
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(8),
+    password: Joi.string().required(),
   }),
 }), createUser);
-// router.use(auth);
 router.use('/users', auth, userRouter);
 router.use('/cards', auth, cardRouter);
-router.all('*', (req, res) => {
-  res.status(ERROR_NOT_FOUND).send({ message: 'Страница не найдена' });
+router.all('*', auth, (req, res, next) => {
+  next(new NotFoundError('Страница не найдена'));
 });
 
 module.exports = router;

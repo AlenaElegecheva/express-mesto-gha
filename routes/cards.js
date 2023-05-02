@@ -13,9 +13,6 @@ const { LINK } = require('../utils/regex');
 router.get('/', getAllCards);
 
 router.post('/', celebrate({
-  query: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
-  }),
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().regex(LINK),
@@ -23,29 +20,20 @@ router.post('/', celebrate({
 }), createCard);
 
 router.delete('/:cardId', celebrate({
-  query: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
-  }),
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().alphanum().hex().length(24),
   }),
 }), deleteCard);
 
 router.put('/:cardId/likes', celebrate({
-  query: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
-  }),
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().alphanum().hex().length(24),
   }),
 }), likeCard); // поставить лайк карточке
 
 router.delete('/:cardId/likes', celebrate({
-  query: Joi.object().keys({
-    _id: Joi.string().alphanum().length(24),
-  }),
   params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().alphanum().hex().length(24),
   }),
 }), dislikeCard); // убрать лайк с карточки
 
