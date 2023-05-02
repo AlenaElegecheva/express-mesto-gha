@@ -66,12 +66,12 @@ module.exports.getUserById = (req, res, next) => {
       if (user) {
         res.send({ data: user });
       } else {
-        throw new NotFoundError('Пользователь с указанным id не найден');
+        next(new NotFoundError('Пользователь с указанным id не найден'));
       }
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        throw new BadDataError('Переданы некорректные данные.');
+        next(new BadDataError('Переданы некорректные данные.'));
       } else {
         next(err);
       }
@@ -103,9 +103,9 @@ module.exports.createUser = (req, res, next) => {
     // eslint-disable-next-line consistent-return
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new BadDataError('Переданы некорректные данные.');
+        next(new BadDataError('Переданы некорректные данные.'));
       } else if (err.code === 11000) {
-        throw new ConflictError('Данный email уже зарегистрирован.');
+        next(new ConflictError('Данный email уже зарегистрирован.'));
       } else {
         next(err);
       }
